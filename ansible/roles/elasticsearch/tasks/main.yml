@@ -1,0 +1,100 @@
+---
+- name: Ensure /etc/apt/apt.conf.d directory exists
+  ansible.builtin.file:
+    path: /etc/apt/apt.conf.d
+    state: directory
+    mode: '0755'
+
+- name: Ensure APT proxy configuration file exists
+  ansible.builtin.file:
+    path: /etc/apt/apt.conf.d/01proxy
+    state: touch 
+
+# Настраиваем прокси для APT
+- name: Set APT proxy
+  ansible.builtin.lineinfile:
+    path: /etc/apt/apt.conf.d/01proxy
+    line: 'Acquire::http::Proxy "http://10.128.1.100:3128/";'
+    state: present
+
+- name: Установить необходимые пакеты для Docker
+  ansible.builtin.apt:
+    name:
+      - docker.io
+      - docker-compose
+    state: present
+    update_cache: yes
+
+- name: Убедиться, что директория для конфигурации Docker существует
+  ansible.builtin.file:
+    path: /etc/systemd/system/docker.service.d
+    state: directory
+    mode: '0755'
+
+- name: Создать конфигурацию прокси для Docker
+  copy:
+    dest: /etc/systemd/system/docker.service.d/http-proxy.conf
+    content: |
+      [Service]
+      Environment="HTTP_PROXY=http://10.128.1.100:3128/"
+      Environment="HTTPS_PROXY=http://10.128.1.100:3128/"
+      Environment="NO_PROXY=localhost,127.0.0.1"
+
+- name: Перезагрузить систему
+  command: systemctl daemon-reload
+
+# - name: Перезапустить Docker
+#   systemd:
+#     name: docker
+#     state: restarted
+
+- name: Docker mirror config file
+  ansible.builtin.copy:
+    src: daemon.json
+    dest: /etc/docker/daemon.json
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Запуск докера
+  ansible.builtin.systemd:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: Создать Docker volume для Elasticsearch
+  community.docker.docker_volume:
+    name: elasticsearch-data
+    state: present
+
+- name: Запустить контейнер Elasticsearch
+  community.docker.docker_container: 
+    name: elasticsearch
+    image: elasticsearch:8.5.1
+    state: started
+    restart_policy: always
+    published_ports:
+      - "9200:9200"
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    env:
+      discovery.type: single-node
+      ELASTIC_PASSWORD: "loh"
+
+- name: Подождать, пока Elasticsearch станет доступен
+  ansible.builtin.wait_for:
+    port: 9200
+    delay: 10
+    timeout: 300
+
+- name: Создать пользователя v3ll (для связки с кибана, так как эластик суперпользователь и им не дает)
+  ansible.builtin.uri:
+    url: "https://10.130.1.21:9200/_security/user/v3ll"
+    method: POST
+    user: "elastic"
+    password: "loh"
+    validate_certs: no
+    headers:
+      Content-Type: "application/json"
+    body: '{"password": "1qaz2wsx", "roles": ["kibana_system"]}'
+    status_code: 201

@@ -1,0 +1,12 @@
+{ 
+  "registry-mirrors": [ 
+    "https://mirror.gcr.io",
+    "https://daocloud.io",
+    "https://c.163.com/",
+    "https://huecker.io/",
+    "https://registry.docker-cn.com",
+    "https://quay.io/",
+    "https://cr.yandex/mirror",
+    "https://dh-mirror.gitverse.ru"
+  ] 
+}

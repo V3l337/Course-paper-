@@ -1,0 +1,14 @@
+#cloud-config
+
+users:
+  - name: v3ll
+    ssh-authorized-keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDX8Ti1pTVivP+16ANkMp3blMCIliB6PqeC80rA5xstdof+an7ZDcHJU0Ep3Ck+DAQePARxhDLyVpKggMxDzhMjC5zVOnHpEEx9HYWwD67d/gIUTE8J2kmh4nWuURKJj+OT5qhEt5ZgdZbHXu9/LKQ7xOfZv0ogI2U1ty/KV5nPPAPZ0ubpfSa7rwmpxpkYa5wPZghgsFPiiCNNwnGTWf8c5QVejdYDKekRFF9bKMAImAeY/jacZMtyzfhjeWe7PmtU8vpDmuWCqlq1ryueAZV7dAMj60vy6O4dk55RuK7quXov6tdIOe1Pq+91ZQgRBJRV/UKnW5WfuB8v2Mr63kW1Sxxxc2t3XxojLUjBGkvXQdIUuTfI7ttvXfBdkJn1R5C1KBFquDTGQkRIOi2Cc60gWYiQRYUFQGPEAF3ZZw/Icqm2zW/1mZUbiX3azukKlFDQihrC3yInQh8P+ZBW9R1wwMiuPBMZTK3agJ6jiUtRnoTuYHXtfQCPE0o1Rvz70q8= valen@V3l
+    groups: sudo
+    shell: /bin/bash
+    sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+
+package_update: true
+package_upgrade: true
+# packages:
+#    - nginx

@@ -1,0 +1,48 @@
+---
+- name: Download filebeat
+  ansible.builtin.copy:
+    src: filebeat-8.15.2-amd64.deb
+    dest: /tmp/filebeat-8.15.2-amd64.deb
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Установить Filebeat из .deb пакета
+  ansible.builtin.command:
+    cmd: dpkg -i /tmp/filebeat-8.15.2-amd64.deb
+  register: dpkg_output
+  ignore_errors: true
+
+- name: Copy config filebeat
+  ansible.builtin.copy:
+    src: filebeat.yml
+    dest: /etc/filebeat/filebeat.yml
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Проверить статус Filebeat
+  ansible.builtin.command:
+    cmd: systemctl status filebeat.service
+  register: filebeat_status
+  ignore_errors: true
+
+- name: Включить Filebeat при загрузке
+  ansible.builtin.systemd:
+    name: filebeat
+    enabled: yes
+    state: started
+
+- name: Показать статус Filebeat
+  ansible.builtin.debug:
+    var: filebeat_status.stdout_lines
+
+- name: Проверить отправку на elasticsearch
+  ansible.builtin.command:
+    cmd: sudo filebeat test output
+  register: filebeat_output
+  ignore_errors: true  
+
+- name: Показать статус Filebeat выхода
+  ansible.builtin.debug:
+    var: filebeat_output.stdout_lines 

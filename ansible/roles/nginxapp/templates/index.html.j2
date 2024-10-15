@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>{{ ansible_hostname }}</title>
+<style>
+html { color-scheme: light dark; }
+body { width: 35em; margin: 0 auto;
+font-family: Tahoma, Verdana, Arial, sans-serif; }
+</style>
+</head>
+<body>
+<h1>{{ ansible_hostname }}</h1>
+<p>IP: {{ ansible_default_ipv4.address }}</p>
+
+<p><em>Students of netology</em></p>
+</body>
+</html>

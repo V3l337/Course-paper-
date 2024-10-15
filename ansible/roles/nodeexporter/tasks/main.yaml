@@ -1,0 +1,83 @@
+---
+# - name: Обновить индекс пакетов APT
+#   ansible.builtin.apt:
+#     update_cache: true
+#     upgrade: full
+
+- name: Создать группу для Prometheus
+  ansible.builtin.group:
+    name: prometheus
+    system: true
+
+- name: Создать пользователя Prometheus
+  ansible.builtin.user:
+    name: prometheus
+    group: prometheus
+    shell: /bin/false
+    system: true
+    create_home: no
+  register: prometheus_user_creation
+
+- name: Создать основную директорию для Prometheus
+  ansible.builtin.file:
+    path: /etc/prometheus
+    state: directory
+    mode: '0755'
+
+- name: Создать директорию для Node Exporter
+  ansible.builtin.file:
+    path: /etc/prometheus/node-exporter
+    state: directory
+    owner: prometheus
+    group: prometheus
+    mode: '0755'
+
+- name: Скачать Node Exporter
+  ansible.builtin.copy:
+    src: node_exporter-1.8.1.linux-amd64.tar.gz
+    dest: /tmp/node_exporter.tar.gz
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Извлечь Node Exporter
+  ansible.builtin.unarchive:
+    src: /tmp/node_exporter.tar.gz
+    dest: /etc/prometheus/node-exporter
+    remote_src: true
+
+- name: Установить права на директорию Node Exporter
+  ansible.builtin.file:
+    path: /etc/prometheus/node-exporter
+    owner: prometheus
+    group: prometheus
+    recurse: yes
+
+- name: Скопировать конфигурацию Node Exporter
+  ansible.builtin.copy:
+    src: node-exporter.service  
+    dest: /etc/systemd/system/node-exporter.service  
+    owner: root
+    group: root
+    mode: '0644'
+    remote_src: false
+
+- name: Перезагрузить systemd
+  ansible.builtin.systemd:
+    daemon_reload: yes
+
+- name: Запустить сервис Node Exporter
+  ansible.builtin.systemd:
+    name: node-exporter.service
+    state: started
+    enabled: true
+
+- name: Проверить статус Node Exporter
+  ansible.builtin.command:
+    cmd: systemctl status node-exporter.service
+  register: node_exporter_status
+  ignore_errors: true
+
+- name: Показать статус Node Exporter
+  ansible.builtin.debug:
+    var: node_exporter_status.stdout_lines

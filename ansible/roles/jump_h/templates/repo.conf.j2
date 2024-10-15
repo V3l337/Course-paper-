@@ -1,0 +1,9 @@
+# ansible/roles/local_repo/templates/repo.conf.j2
+
+<Directory "/var/www/html/repo">
+    Options Indexes FollowSymLinks
+    AllowOverride None
+    Require all granted
+</Directory>
+
+Alias /repo /var/www/html/repo

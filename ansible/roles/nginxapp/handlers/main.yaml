@@ -1,0 +1,6 @@
+---
+# Перезапуск службы Nginx после изменения конфигурации
+- name: Restart Nginx
+  ansible.builtin.service:
+    name: nginx
+    state: restarted

@@ -1,0 +1,10 @@
+server.host: "0.0.0.0" 
+server.port: 5601
+elasticsearch.hosts: ["https://10.130.1.21:9200"]  # Адрес Elasticsearch сервера
+# elasticsearch.username: "elastic"
+# elasticsearch.password: "loh"
+elasticsearch.username: "v3ll"  
+elasticsearch.password: "1qaz2wsx"
+elasticsearch.ssl.verificationMode: none
+monitoring.ui.container.elasticsearch.enabled: true
+

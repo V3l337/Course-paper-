@@ -1,0 +1,12 @@
+# ansible/roles/local_repo/templates/apt-mirror.conf.j2
+
+set base_path    /var/spool/apt-mirror
+set mirror_path  ${base_path}/mirror
+set skel_path    ${base_path}/skel
+set var_path     ${base_path}/var
+set clean_path   ${base_path}/clean
+set _tilde 0
+
+deb http://archive.ubuntu.com/ubuntu focal main restricted universe multiverse
+deb http://archive.ubuntu.com/ubuntu focal-updates main restricted universe multiverse
+deb http://archive.ubuntu.com/ubuntu focal-security main restricted universe multiverse

@@ -1,0 +1,5 @@
+---
+# Variables for Elasticsearch role
+
+elasticsearch_version: "8.5.1"
+elasticsearch_password: "loh"  # Change this to a secure password

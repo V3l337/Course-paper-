@@ -1,0 +1,61 @@
+###Загрузка и установка Nginx Log Exporter
+- name: Загрузить nginx log exporter
+  ansible.builtin.copy:
+    src: prometheus-nginxlog-exporter_1.9.2_linux_amd64.deb
+    dest: /tmp/prometheus-nginxlog-exporter_1.9.2_linux_amd64.deb
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Установить nginx log exporter из .deb пакета
+  ansible.builtin.command:
+    cmd: dpkg -i /tmp/prometheus-nginxlog-exporter_1.9.2_linux_amd64.deb
+  register: dpkg_output
+  ignore_errors: true
+
+- name: Копировать nginx.conf 
+  ansible.builtin.copy:
+    src: nginx.conf
+    dest: /etc/nginx/nginx.conf
+    owner: root
+    group: root
+    mode: '0644'
+
+# - name: Копировать nginxlog-exporter.yaml 
+#   ansible.builtin.copy:
+#     src: nginxlog-exporter.yaml
+#     dest: /etc/nginxlog-exporter.yaml
+#     owner: root
+#     group: root
+#     mode: '0644'
+
+###Создание systemd unit файла для nginx log exporter
+- name: Создать systemd unit файл для nginx log exporter
+  ansible.builtin.copy:
+    src: nginxlog-exporter.service
+    dest: /etc/systemd/system/nginxlog-exporter.service
+    owner: root
+    group: root
+    mode: '0644'
+
+###Перезагрузка демонов systemd и запуск Nginx Log Exporter
+- name: Перезагрузить systemd демоны
+  ansible.builtin.systemd:
+    daemon_reload: yes
+
+- name: Включить и запустить nginx log exporter
+  ansible.builtin.systemd:
+    name: nginxlog-exporter
+    enabled: yes
+    state: started
+
+###Проверка статуса nginx log exporter
+- name: Проверить статус nginx log exporter
+  ansible.builtin.command:
+    cmd: systemctl status nginxlog-exporter.service
+  register: nginxlog_status
+  ignore_errors: true
+
+- name: Показать статус nginx log exporter
+  ansible.builtin.debug:
+    var: nginxlog_status.stdout_lines

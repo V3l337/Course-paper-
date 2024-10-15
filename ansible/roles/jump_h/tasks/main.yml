@@ -1,0 +1,31 @@
+---
+- name: Install Squid proxy server
+  ansible.builtin.apt:
+    name: squid
+    state: present
+    update_cache: yes
+
+- name: Copy Squid configuration
+  ansible.builtin.copy:
+    src: squid.conf
+    dest: /etc/squid/squid.conf
+    mode: '0644'
+
+- name: Ensure Squid is running and enabled
+  ansible.builtin.service:
+    name: squid
+    state: started
+    enabled: no
+
+# - name: Restart Squid
+#   ansible.builtin.service:
+#     name: squid
+#     state: restarted
+
+- name: copy ssh key in jump hosts
+  ansible.builtin.copy:
+    src: /root/fops-sysadm-diplom/ansible/file/keyssh
+    dest: /home/v3ll/.ssh/
+    owner: v3ll
+    group: v3ll
+    mode: '600'

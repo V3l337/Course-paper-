@@ -1,0 +1,40 @@
+---
+- name: bastion/jump congfiguration hosts (repo local)
+  hosts: bastion_h
+  become: true
+  roles:
+    - role: jump_h
+
+- name: Installing utilities on web hosts
+  hosts: web_hosts
+  become: true
+  roles:
+    - role: nodeexporter
+    - role: nginxapp
+    - role: nginxLE
+    - role: filebeat
+    - role: nodeexporter
+
+- name: Installing prometheus
+  hosts: prometheus
+  become: true
+  roles:
+    - role: prometheus  
+
+- name: Installing grafana 
+  hosts: grafana
+  become: true
+  roles:
+    - role: grafana   
+
+- name: Installing elasticsearch
+  hosts: vm-ES
+  become: true
+  roles:
+    - role: elasticsearch
+
+- name: Installing kibana
+  hosts: vm-kibana
+  become: true
+  roles:
+    - role: kibana

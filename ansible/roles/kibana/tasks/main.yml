@@ -1,0 +1,99 @@
+---
+- name: Ensure /etc/apt/apt.conf.d directory exists
+  ansible.builtin.file:
+    path: /etc/apt/apt.conf.d
+    state: directory
+    mode: '0755'
+
+- name: Ensure APT proxy configuration file exists
+  ansible.builtin.file:
+    path: /etc/apt/apt.conf.d/01proxy
+    state: touch 
+
+# Настраиваем прокси для APT
+- name: Set APT proxy
+  ansible.builtin.lineinfile:
+    path: /etc/apt/apt.conf.d/01proxy
+    line: 'Acquire::http::Proxy "http://10.128.1.100:3128/";'
+    state: present
+
+- name: Установить необходимые пакеты для Docker
+  ansible.builtin.apt:
+    name: 
+      - docker.io
+      - docker-compose
+    state: present
+    update_cache: yes
+
+- name: Убедиться, что директория для конфигурации Docker существует
+  ansible.builtin.file:
+    path: /etc/systemd/system/docker.service.d
+    state: directory
+    mode: '0755'
+
+- name: Создать конфигурацию прокси для Docker (если необходимо)
+  copy:
+    dest: /etc/systemd/system/docker.service.d/http-proxy.conf
+    content: |
+      [Service]
+      Environment="HTTP_PROXY=http://10.128.1.100:3128/"
+      Environment="HTTPS_PROXY=http://10.128.1.100:3128/"
+      Environment="NO_PROXY=localhost,127.0.0.1"
+
+- name: Перезагрузить систему
+  command: systemctl daemon-reload    
+
+- name: Docker mirror config file
+  ansible.builtin.copy:
+    src: daemon.json
+    dest: /etc/docker/daemon.json
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Создать директорию для конфигурации Kibana
+  ansible.builtin.file:
+    path: /usr/share/kibana/config
+    state: directory
+    mode: '0755'
+
+- name: Копировать файл конфигурации Kibana
+  ansible.builtin.copy:
+    src: kibana.yml
+    dest: /usr/share/kibana/config/kibana.yml
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Убедиться, что служба Docker запущена
+  ansible.builtin.systemd:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: Создать Docker volume для Kibana
+  community.docker.docker_volume:
+    name: kibana_data
+    state: present
+
+- name: Загрузить образ Docker Kibana
+  community.docker.docker_image:
+    name: kibana:8.5.1
+    source: pull
+
+- name: Запустить контейнер Kibana
+  community.docker.docker_container:
+    name: kibana
+    image: kibana:8.5.1
+    state: started
+    restart_policy: always
+    published_ports:
+      - "5601:5601"
+    volumes:
+      - /usr/share/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
+ 
+- name: Подождать, пока Kibana станет доступна
+  wait_for:
+    port: 5601
+    delay: 10
+    timeout: 300
