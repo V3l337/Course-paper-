@@ -21,7 +21,7 @@ output "bastion_ip" {
 output "prometrheus_ip" {
   value = {
     lan = yandex_compute_instance.Prometheus_host.network_interface[0].ip_address,
-    # wan = yandex_compute_instance.Prometheus_host.network_interface[0].nat_ip_address
+    wan = yandex_compute_instance.Prometheus_host.network_interface[0].nat_ip_address
   }
 }
 
@@ -34,14 +34,14 @@ output "elasticsearch_ip" {
 
 output "grafana_ip" {
   value = {
-    # wan_ip = yandex_compute_instance.Grafana_host.network_interface[0].nat_ip_address,
+    wan_ip = yandex_compute_instance.Grafana_host.network_interface[0].nat_ip_address,
     lan_ip = yandex_compute_instance.Grafana_host.network_interface[0].ip_address
   }
 }
 
 output "kibana_ip" {
   value = {
-    # wan_ip = yandex_compute_instance.Kibana_host.network_interface[0].nat_ip_address,
+    wan_ip = yandex_compute_instance.Kibana_host.network_interface[0].nat_ip_address,
     lan_ip = yandex_compute_instance.Kibana_host.network_interface[0].ip_address
   }
 }

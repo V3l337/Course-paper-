@@ -4,7 +4,7 @@ all:
     bastion_h:
       hosts:
         bastion:
-          ansible_host: 84.201.128.149
+          ansible_host: 51.250.1.109
           ansible_user: v3ll
           ansible_ssh_private_key_file: /root/fops-sysadm-diplom/ansible/file/keyssh
     web_hosts:
@@ -14,13 +14,13 @@ all:
           ansible_user: v3ll
           ansible_ssh_private_key_file: /root/fops-sysadm-diplom/ansible/file/keyssh
           ansible_ssh_common_args: >-
-            -o ProxyCommand="ssh -i /root/fops-sysadm-diplom/ansible/file/keyssh -W %h:%p v3ll@84.201.128.149" -o StrictHostKeyChecking=no
+            -o ProxyCommand="ssh -i /root/fops-sysadm-diplom/ansible/file/keyssh -W %h:%p v3ll@51.250.1.109" -o StrictHostKeyChecking=no
         webvm2:
           ansible_host: 10.130.1.20
           ansible_user: v3ll
           ansible_ssh_private_key_file: /root/fops-sysadm-diplom/ansible/file/keyssh
           ansible_ssh_common_args: >-
-            -o ProxyCommand="ssh -i /root/fops-sysadm-diplom/ansible/file/keyssh -W %h:%p v3ll@84.201.128.149" -o StrictHostKeyChecking=no
+            -o ProxyCommand="ssh -i /root/fops-sysadm-diplom/ansible/file/keyssh -W %h:%p v3ll@51.250.1.109" -o StrictHostKeyChecking=no
     prometheus:
       hosts:
         vm-prometheus:
@@ -28,7 +28,7 @@ all:
           ansible_user: v3ll
           ansible_ssh_private_key_file: /root/fops-sysadm-diplom/ansible/file/keyssh
           ansible_ssh_common_args: >-
-            -o ProxyCommand="ssh -i /root/fops-sysadm-diplom/ansible/file/keyssh -W %h:%p v3ll@84.201.128.149" -o StrictHostKeyChecking=no
+            -o ProxyCommand="ssh -i /root/fops-sysadm-diplom/ansible/file/keyssh -W %h:%p v3ll@51.250.1.109" -o StrictHostKeyChecking=no
     grafana:
       hosts:
         vm-grafana:
@@ -36,7 +36,7 @@ all:
           ansible_user: v3ll
           ansible_ssh_private_key_file: /root/fops-sysadm-diplom/ansible/file/keyssh
           ansible_ssh_common_args: >-
-            -o ProxyCommand="ssh -i /root/fops-sysadm-diplom/ansible/file/keyssh -W %h:%p v3ll@84.201.128.149" -o StrictHostKeyChecking=no
+            -o ProxyCommand="ssh -i /root/fops-sysadm-diplom/ansible/file/keyssh -W %h:%p v3ll@51.250.1.109" -o StrictHostKeyChecking=no
     elasticsearch:
       hosts:
         vm-ES:
@@ -44,7 +44,7 @@ all:
           ansible_user: v3ll
           ansible_ssh_private_key_file: /root/fops-sysadm-diplom/ansible/file/keyssh
           ansible_ssh_common_args: >-
-            -o ProxyCommand="ssh -i /root/fops-sysadm-diplom/ansible/file/keyssh -W %h:%p v3ll@84.201.128.149" -o StrictHostKeyChecking=no
+            -o ProxyCommand="ssh -i /root/fops-sysadm-diplom/ansible/file/keyssh -W %h:%p v3ll@51.250.1.109" -o StrictHostKeyChecking=no
     kibana:
       hosts:
         vm-kibana:
@@ -52,4 +52,4 @@ all:
           ansible_user: v3ll
           ansible_ssh_private_key_file: /root/fops-sysadm-diplom/ansible/file/keyssh
           ansible_ssh_common_args: >-
-            -o ProxyCommand="ssh -i /root/fops-sysadm-diplom/ansible/file/keyssh -W %h:%p v3ll@84.201.128.149" -o StrictHostKeyChecking=no
+            -o ProxyCommand="ssh -i /root/fops-sysadm-diplom/ansible/file/keyssh -W %h:%p v3ll@51.250.1.109" -o StrictHostKeyChecking=no

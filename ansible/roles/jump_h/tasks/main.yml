@@ -17,10 +17,10 @@
     state: started
     enabled: no
 
-# - name: Restart Squid
-#   ansible.builtin.service:
-#     name: squid
-#     state: restarted
+- name: Restart Squid
+  ansible.builtin.service:
+    name: squid
+    state: restarted
 
 - name: copy ssh key in jump hosts
   ansible.builtin.copy:

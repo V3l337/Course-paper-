@@ -21,13 +21,14 @@
     group: root
     mode: '0644'
 
-# - name: Копировать nginxlog-exporter.yaml 
-#   ansible.builtin.copy:
-#     src: nginxlog-exporter.yaml
-#     dest: /etc/nginxlog-exporter.yaml
-#     owner: root
-#     group: root
-#     mode: '0644'
+- name: Заменить конфигурационный файл для Nginx Log Exporter
+  ansible.builtin.copy:
+    src:    prometheus-nginxlog-exporter.hcl
+    dest:   /etc/prometheus-nginxlog-exporter.hcl
+    owner:  root
+    group:  root
+    mode:   '0644'
+    force:  yes 
 
 ###Создание systemd unit файла для nginx log exporter
 - name: Создать systemd unit файл для nginx log exporter

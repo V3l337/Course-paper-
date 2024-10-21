@@ -97,4 +97,4 @@
     headers:
       Content-Type: "application/json"
     body: '{"password": "1qaz2wsx", "roles": ["kibana_system"]}'
-    status_code: 201
+    status_code: 200
